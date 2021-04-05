@@ -18,20 +18,24 @@
       <div class="sensorbox">
         <fieldset>
           <legend>Sensor nr. {{i}}</legend>
+          <label for="sensor{{i}}_plant_label">Numele plantei: </label>
+          <input name="sensor{{i}}_plant_label" id="sensor{{i}}_plant_label" value="{{ request.form['sensor' ~ i ~ '_plant_label'] or stored['sensor' ~ i]['plant_label'] }}" required><br>
           <label for="sensor{{i}}_zero_humidity">Valoarea pentru umiditate zero: </label>
           <input name="sensor{{i}}_zero_humidity" id="sensor{{i}}_zero_humidity" value="{{ request.form['sensor' ~ i ~ '_zero_humidity'] or stored['sensor' ~ i]['zero_humidity'] }}" required><br>
           <label for="sensor{{i}}_full_humidity">Valoarea pentru umiditate maximă: </label>
           <input name="sensor{{i}}_full_humidity" id="sensor{{i}}_full_humidity" value="{{ request.form['sensor' ~ i ~ '_full_humidity'] or stored['sensor' ~ i]['full_humidity'] }}" required><br>
           <label for="sensor{{i}}_relay_start">Valaloarea pentru activarea releului: </label>
           <input name="sensor{{i}}_relay_start" id="sensor{{i}}_relay_start" value="{{ request.form['sensor' ~ i ~ '_relay_start'] or stored['sensor' ~ i]['relay_start'] }}" required><br>
-          <label for="sensor{{i}}_relay_duration">Durata de timp a activării: </label>
+          <label for="sensor{{i}}_relay_duration">Durata de timp a activării (ms): </label>
           <input name="sensor{{i}}_relay_duration" id="sensor{{i}}_relay_duration" value="{{ request.form['sensor' ~ i ~ '_relay_duration'] or stored['sensor' ~ i]['relay_duration'] }}" required><br>
         </fieldset>
       </div>
       {% endfor %}
     </div>
-    <label for="log_delay">Frecvența înregistrărilor: </label>
+    <label for="log_delay">Frecvența înregistrărilor (sec): </label>
     <input name="log_delay" id="log_delay" value="{{ request.form['log_delay'] or stored['log_delay'] }}" required><br>
+    <label for="relay_cooldown">Cooldown pentru activarea pompelor (sec): </label>
+    <input name="relay_cooldown" id="relay_cooldown" value="{{ request.form['relay_cooldown'] or stored['relay_cooldown'] }}" required><br>
     <input class="btn btn-primary" type="submit" value="Salvează">
   </form>
   {% endif %}

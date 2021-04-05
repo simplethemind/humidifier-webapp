@@ -15,11 +15,13 @@ def build_new_values(form):
     for i in range(3):
         num = str(i)
         values['sensor'+num] = {}
+        values['sensor'+num]['plant_label'] = form['sensor'+num+'_plant_label']
         values['sensor'+num]['zero_humidity'] = form['sensor'+num+'_zero_humidity']
         values['sensor'+num]['full_humidity'] = form['sensor'+num+'_full_humidity']
         values['sensor'+num]['relay_start'] = form['sensor'+num+'_relay_start']
         values['sensor'+num]['relay_duration'] = form['sensor'+num+'_relay_duration']
     values['log_delay'] = form['log_delay']
+    values['relay_cooldown'] = form['relay_cooldown'] * 1000
     return values
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -29,6 +31,13 @@ def show_panel():
     ### handle GET method ###
     if request.method =='GET':
 
+        ### get sensor values ###
+        sensor_values = {}
+        with Proxy('PYRONAME:serial_server.serial_connection') as controller:
+            sensor_values = controller.get_settings()
+        # change relay_cooldown value from miliseconds to seconds
+        sensor_values['relay_cooldown'] /= 1000
+        
         ### generate graph SVG ###
         timeDelta = timedelta(days=7)
         time = request.args.get('timespan')
@@ -47,12 +56,15 @@ def show_panel():
         timeframe = [startTimePoint, endTimePoint]
         logsList = grapher.get_logs_in_timeframe(timeframe)
         dataPoints = grapher.combine_logs(logsList, timeframe)
-        html_str = grapher.plot_data_mlp_to_html(dataPoints)
-
-        ### get sensor values ###
-        sensor_values = ''
-        with Proxy('PYRONAME:serial_server.serial_connection') as controller:
-            sensor_values = controller.get_settings()
+        plant_labels = ['plant' + str(i) for i in range(3)]
+        try:
+            plant_labels = [
+            sensor_values['sensor0']['plant_label'], 
+            sensor_values['sensor1']['plant_label'],
+            sensor_values['sensor2']['plant_label']]
+        except:
+            pass
+        html_str = grapher.plot_data_mlp_to_html(dataPoints, labels=plant_labels)
 
         return render_template('panel/panel.html', panel=html_str, stored=sensor_values)
 

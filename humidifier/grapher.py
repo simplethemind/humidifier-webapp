@@ -132,7 +132,7 @@ def cull_to_number(data_points, max_length):
 
 
 
-def plot_data_mlp_to_html(data_points):
+def plot_data_mlp_to_html(data_points, labels=[]):
     # print(len(dataPoints))
     data_points = cull_to_number(data_points, 250)
     # print(len(dataPoints))
@@ -147,9 +147,13 @@ def plot_data_mlp_to_html(data_points):
     dates = matplotlib.dates.date2num(timescale)
     fig, ax = plt.subplots(figsize=[9.28, 4.8])
     plt.rcParams.update({'figure.autolayout': True})
-    p1 = ax.plot_date(dates, swap[1], color='red', linestyle='solid', marker=None, label='Mentă')
-    p2 = ax.plot_date(dates, swap[2], color='green', linestyle='solid', marker=None, label='Yucca')
-    p3 = ax.plot_date(dates, swap[3], color='blue', linestyle='solid', marker=None, label='Gol')
+    ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(10))
+    ax.grid(which='major', axis='both', linestyle="-", alpha=0.25, linewidth=1)
+    ax.tick_params(labelsize='medium', width=1)
+    # Read labels from list
+    p1 = ax.plot_date(dates, swap[1], color='red', linestyle='solid', marker=None, label=labels[0])
+    p2 = ax.plot_date(dates, swap[2], color='green', linestyle='solid', marker=None, label=labels[1])
+    p3 = ax.plot_date(dates, swap[3], color='blue', linestyle='solid', marker=None, label=labels[2])
     s1 = ax.scatter(dates, swap[1], color='#00000000', s=50)
     s2 = ax.scatter(dates, swap[2], color='#00000000', s=50)
     s3 = ax.scatter(dates, swap[3], color='#00000000', s=50)

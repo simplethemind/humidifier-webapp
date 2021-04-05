@@ -1,0 +1,5 @@
+include humidifier/schema.sql
+graft humidifier/static
+graft humidifier/templates
+include humidifier/logger/serial_server.py
+global-exclude *.pyc

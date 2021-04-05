@@ -1,0 +1,12 @@
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Se încarcă... {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <script>
+        window.location.replace({{root_url}});
+    </script>
+{% endblock %}

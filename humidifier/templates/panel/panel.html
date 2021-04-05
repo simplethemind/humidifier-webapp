@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Grafic umiditate{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {{panel|safe}}
+  <a href="panel?timespan=h4" class="btn btn-primary">4 ore</a>
+  <a href="panel?timespan=d1" class="btn btn-primary">O zi</a>
+  <a href="panel?timespan=d3" class="btn btn-primary">3 zile</a>
+  <a href="panel?timespan=d7" class="btn btn-primary">7 zile</a>
+  <a href="panel?timespan=d30" class="btn btn-primary">30 de zile</a>
+  {% if g.user %}
+  <form method="post">
+    <div class="sensorwrapper input-group input-group-sm mb-3">
+      {% for i in range(3) %}
+      <div class="sensorbox">
+        <fieldset>
+          <legend>Sensor nr. {{i}}</legend>
+          <label for="sensor{{i}}_zero_humidity">Valoarea pentru umiditate zero: </label>
+          <input name="sensor{{i}}_zero_humidity" id="sensor{{i}}_zero_humidity" value="{{ request.form['sensor' ~ i ~ '_zero_humidity'] or stored['sensor' ~ i]['zero_humidity'] }}" required><br>
+          <label for="sensor{{i}}_full_humidity">Valoarea pentru umiditate maximă: </label>
+          <input name="sensor{{i}}_full_humidity" id="sensor{{i}}_full_humidity" value="{{ request.form['sensor' ~ i ~ '_full_humidity'] or stored['sensor' ~ i]['full_humidity'] }}" required><br>
+          <label for="sensor{{i}}_relay_start">Valaloarea pentru activarea releului: </label>
+          <input name="sensor{{i}}_relay_start" id="sensor{{i}}_relay_start" value="{{ request.form['sensor' ~ i ~ '_relay_start'] or stored['sensor' ~ i]['relay_start'] }}" required><br>
+          <label for="sensor{{i}}_relay_duration">Durata de timp a activării: </label>
+          <input name="sensor{{i}}_relay_duration" id="sensor{{i}}_relay_duration" value="{{ request.form['sensor' ~ i ~ '_relay_duration'] or stored['sensor' ~ i]['relay_duration'] }}" required><br>
+        </fieldset>
+      </div>
+      {% endfor %}
+    </div>
+    <label for="log_delay">Frecvența înregistrărilor: </label>
+    <input name="log_delay" id="log_delay" value="{{ request.form['log_delay'] or stored['log_delay'] }}" required><br>
+    <input class="btn btn-primary" type="submit" value="Salvează">
+  </form>
+  {% endif %}
+{% endblock %}

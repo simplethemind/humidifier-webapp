@@ -21,7 +21,7 @@ def build_new_values(form):
         values['sensor'+num]['relay_start'] = form['sensor'+num+'_relay_start']
         values['sensor'+num]['relay_duration'] = form['sensor'+num+'_relay_duration']
     values['log_delay'] = form['log_delay']
-    values['relay_cooldown'] = form['relay_cooldown'] * 1000
+    values['relay_cooldown'] = str(int(float(form['relay_cooldown']) * 1000))
     return values
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -37,7 +37,7 @@ def show_panel():
             sensor_values = controller.get_settings()
         # change relay_cooldown value from miliseconds to seconds
         sensor_values['relay_cooldown'] /= 1000
-        
+
         ### generate graph SVG ###
         timeDelta = timedelta(days=7)
         time = request.args.get('timespan')

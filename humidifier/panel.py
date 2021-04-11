@@ -10,6 +10,7 @@ from datetime import (datetime, timedelta)
 
 bp = Blueprint('panel', __name__)
 
+
 def build_new_values(form):
     values = {}
     for i in range(3):
@@ -23,6 +24,11 @@ def build_new_values(form):
     values['log_delay'] = form['log_delay']
     values['relay_cooldown'] = str(int(float(form['relay_cooldown']) * 1000))
     return values
+
+def activate_pump(index, duration):
+    with Proxy('PYRONAME:serial_server.serial_connection') as controller:
+        controller.post_message('r' + str(index) + 'd' + str(duration))
+
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/panel', methods=['GET', 'POST'])
@@ -70,11 +76,21 @@ def show_panel():
 
     ### handle POST method ###
     if request.method == 'POST':
-        new = build_new_values(request.form)
+        if g.user != None:
+            if 'submit_settings_button' in request.form:
+                new = build_new_values(request.form)
 
-        with Proxy('PYRONAME:serial_server.serial_connection') as controller:
-            controller.set_settings(new)
-        return redirect(url_for('reload'))
+                with Proxy('PYRONAME:serial_server.serial_connection') as controller:
+                    controller.set_settings(new)
+                return redirect(url_for('reload'))
+            else:
+                for i in range(3):
+                    str_i = str(i)
+                    if 'submit_relay_' + str_i in request.form:
+                        duration_i = request.form['relay' + str_i + '_activation_duration']
+                        activate_pump(i, duration_i)
+                        flash('S-a activat pompa ' + str_i + ' pentru ' + duration_i + ' milisecunde.')
+                return redirect(url_for('reload'))
 
 
 @bp.route('/reloading', methods=['GET'])

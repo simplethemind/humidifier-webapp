@@ -17,7 +17,7 @@
       {% for i in range(3) %}
       <div class="sensorbox">
         <fieldset>
-          <legend>Sensor nr. {{i}}</legend>
+          <legend>Senzor nr. {{i}}</legend>
           <label for="sensor{{i}}_plant_label">Numele plantei: </label>
           <input name="sensor{{i}}_plant_label" id="sensor{{i}}_plant_label" value="{{ request.form['sensor' ~ i ~ '_plant_label'] or stored['sensor' ~ i]['plant_label'] }}" required><br>
           <label for="sensor{{i}}_zero_humidity">Valoarea pentru umiditate zero: </label>
@@ -32,11 +32,25 @@
       </div>
       {% endfor %}
     </div>
+
     <label for="log_delay">Frecvența înregistrărilor (sec): </label>
     <input name="log_delay" id="log_delay" value="{{ request.form['log_delay'] or stored['log_delay'] }}" required><br>
     <label for="relay_cooldown">Cooldown pentru activarea pompelor (sec): </label>
     <input name="relay_cooldown" id="relay_cooldown" value="{{ request.form['relay_cooldown'] or stored['relay_cooldown'] }}" required><br>
-    <input class="btn btn-primary" type="submit" value="Salvează">
+    <input class="btn btn-primary" type="submit" name="submit_settings_button" value="Salvează">
+
+    <div class="sensorwrapper input-group input-group-sm mb-3">
+      {% for i in range(3) %}
+      <div class="sensorbox">
+        <fieldset>
+          <legend>Pompă pentru {{ request.form['sensor' ~ i ~ '_plant_label'] or stored['sensor' ~ i]['plant_label'] }}</legend>
+          <label for="relay{{i}}_activation_duration">Durata activării instantanee (ms): </label>
+          <input name="relay{{i}}_activation_duration" id="relay{{i}}_activation_duration" value="{{ request.form['sensor' ~ i ~ '_relay_duration'] or stored['sensor' ~ i]['relay_duration'] }}" required><br>
+          <input class="btn btn-primary" type="submit" name="submit_relay_{{i}}" value="Activează">
+        </fieldset>
+      </div>
+      {% endfor %}
+    </div>
   </form>
   {% endif %}
 {% endblock %}
